@@ -29,8 +29,14 @@ public class Partie {
     
     public void afficherCartesJoueur(Joueur unJoueur){
         for (int i=0; i<2; i++){
-            System.out.println(unJoueur.listeCartes[i].tabDeplacement);
-        }
+            System.out.println(unJoueur.listeCartes[i].nom);
+            for (int j = 0; j < unJoueur.listeCartes[i].tabDeplacement.length; j++){
+                for (int k = 0; k < unJoueur.listeCartes[i].tabDeplacement[j].length; k++){
+                    System.out.print(unJoueur.listeCartes[i].tabDeplacement[j][k]);
+                }System.out.println();            
+            }
+        } System.out.println();
+        System.out.println();
     }
     
     public void echangerCarte(Joueur joueurCourant, int numeroCarte ){        
@@ -65,17 +71,33 @@ public class Partie {
     }
     
     public void placerPieces(){
-        grilleJeu.Cellules[0][2].pieceCourante = listeJoueurs[0].listePieces[0];
-        grilleJeu.Cellules[0][0].pieceCourante = listeJoueurs[0].listePieces[1];
-        grilleJeu.Cellules[0][1].pieceCourante = listeJoueurs[0].listePieces[2];
-        grilleJeu.Cellules[0][3].pieceCourante = listeJoueurs[0].listePieces[3];
-        grilleJeu.Cellules[0][4].pieceCourante = listeJoueurs[0].listePieces[4];
-        
-        grilleJeu.Cellules[4][2].pieceCourante = listeJoueurs[1].listePieces[0];
-        grilleJeu.Cellules[4][0].pieceCourante = listeJoueurs[1].listePieces[1];
-        grilleJeu.Cellules[4][1].pieceCourante = listeJoueurs[1].listePieces[2];
-        grilleJeu.Cellules[4][3].pieceCourante = listeJoueurs[1].listePieces[3];
-        grilleJeu.Cellules[4][4].pieceCourante = listeJoueurs[1].listePieces[4];
+        if (listeJoueurs[0].couleur.equals("bleu")){
+            
+            grilleJeu.Cellules[0][2].pieceCourante = listeJoueurs[0].listePieces[0];
+            grilleJeu.Cellules[0][0].pieceCourante = listeJoueurs[0].listePieces[1];
+            grilleJeu.Cellules[0][1].pieceCourante = listeJoueurs[0].listePieces[2];
+            grilleJeu.Cellules[0][3].pieceCourante = listeJoueurs[0].listePieces[3];
+            grilleJeu.Cellules[0][4].pieceCourante = listeJoueurs[0].listePieces[4];
+
+            grilleJeu.Cellules[4][2].pieceCourante = listeJoueurs[1].listePieces[0];
+            grilleJeu.Cellules[4][0].pieceCourante = listeJoueurs[1].listePieces[1];
+            grilleJeu.Cellules[4][1].pieceCourante = listeJoueurs[1].listePieces[2];
+            grilleJeu.Cellules[4][3].pieceCourante = listeJoueurs[1].listePieces[3];
+            grilleJeu.Cellules[4][4].pieceCourante = listeJoueurs[1].listePieces[4];
+        }
+        else{
+            grilleJeu.Cellules[0][2].pieceCourante = listeJoueurs[1].listePieces[0];
+            grilleJeu.Cellules[0][0].pieceCourante = listeJoueurs[1].listePieces[1];
+            grilleJeu.Cellules[0][1].pieceCourante = listeJoueurs[1].listePieces[2];
+            grilleJeu.Cellules[0][3].pieceCourante = listeJoueurs[1].listePieces[3];
+            grilleJeu.Cellules[0][4].pieceCourante = listeJoueurs[1].listePieces[4];
+
+            grilleJeu.Cellules[4][2].pieceCourante = listeJoueurs[0].listePieces[0];
+            grilleJeu.Cellules[4][0].pieceCourante = listeJoueurs[0].listePieces[1];
+            grilleJeu.Cellules[4][1].pieceCourante = listeJoueurs[0].listePieces[2];
+            grilleJeu.Cellules[4][3].pieceCourante = listeJoueurs[0].listePieces[3];
+            grilleJeu.Cellules[4][4].pieceCourante = listeJoueurs[0].listePieces[4];
+        }
 }
     
     public int choisirCarte(){
@@ -207,7 +229,13 @@ public class Partie {
         listeJoueurs[0] = J1;
         listeJoueurs[1] = J2;
         
+        J1.definirPieces();
+        J2.definirPieces();
+        
         attribuerCouleursAuxJoueurs();
+        
+        J1.couleurPieces(J1.couleur);
+        J2.couleurPieces(J2.couleur);
         
         System.out.println("Le joueur "+J1.nom+" est de couleur "+J1.couleur);
         System.out.println("Le joueur "+J2.nom+" est de couleur "+J2.couleur);       
@@ -257,7 +285,4 @@ public class Partie {
         }
     }
 }
-
-
-
 
