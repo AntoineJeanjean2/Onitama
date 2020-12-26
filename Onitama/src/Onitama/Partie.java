@@ -40,8 +40,8 @@ public class Partie {
     }
     
     public void echangerCarte(Joueur joueurCourant, int numeroCarte ){        
-        Carte temp = joueurCourant.listeCartes[numeroCarte];
-        joueurCourant.listeCartes[numeroCarte] = grilleJeu.carteEchiquier;
+        Carte temp = joueurCourant.listeCartes[numeroCarte-1];
+        joueurCourant.listeCartes[numeroCarte-1] = grilleJeu.carteEchiquier;
         grilleJeu.carteEchiquier = temp;               
     }
     
@@ -112,7 +112,8 @@ public class Partie {
         else{
             Carte carteAJouer=joueurCourant.listeCartes[numero-1];
             return numero;
-        }return 0;        
+        }System.out.println("yo");
+        return 0;        
     }
     
     public int[] choisirPion(){
@@ -121,13 +122,14 @@ public class Partie {
         int x=sc.nextInt()-1;
         System.out.println("Saisir le numéro de la colonne de la pièce que vous souhaitez déplacer");
         int y=sc.nextInt()-1;
-        
+        int[] coordonneesPiece = new int[2];
         Piece pieceADeplacer;
-        
+
         if (this.grilleJeu.Cellules[x][y].pieceCourante != null){
             if (this.grilleJeu.Cellules[x][y].pieceCourante.couleur.equals(joueurCourant.couleur)){
                 pieceADeplacer = this.grilleJeu.Cellules[x][y].pieceCourante;
-                int[] coordonneesPiece = {x,y};
+                coordonneesPiece[0] = x;
+                coordonneesPiece[1] = y;
                 return coordonneesPiece;
             }
             else{
@@ -138,13 +140,13 @@ public class Partie {
         else{
             System.out.println("Saisissez des coordonnées de pièces correspondant à une de vos pièces");
             choisirPion();
-        }return null;        
+        }return coordonneesPiece;
     }
     
     public int[] choisirDeplacement(int[] coordonneesPiece,int numero){
         Carte carteAJouer = joueurCourant.listeCartes[numero-1];
         
-        Scanner sc = new Scanner(System.in);
+        Scanner sc = new Scanner(System.in);  //Saisie du point d'arrivée de la pièce
         System.out.println("Saisir le numéro de la ligne où vous souhaitez déplacer votre pièce");
         int x=sc.nextInt()-1;
         System.out.println("Saisir le numéro de la colonne où vous souhaitez déplacer votre pièce");
@@ -157,16 +159,17 @@ public class Partie {
                 
         if(grilleJeu.Cellules[x][y].pieceCourante != null){
             if(!grilleJeu.Cellules[x][y].pieceCourante.couleur.equals(joueurCourant.couleur)){
-                int xVect = x - coordonneesPiece[0];
+                int xVect = x - coordonneesPiece[0];  //On définit le vecteur entre la case initiale du pion et la case d'arrivée souhaitée par ses 2 coordonnées
                 int yVect = y - coordonneesPiece[1];
                 
-                for (int i=0; i < carteAJouer.tabDeplacement.length; i++){
+                for (int i=0; i < carteAJouer.tabDeplacement.length; i++){  //On vérifie que ce vecteur appartienne au tableau des vecteurs déplacement possibles associés à la carte
                     if (xVect == carteAJouer.tabDeplacement[i][0] && yVect == carteAJouer.tabDeplacement[i][1]){
-                        int[] tabVecteur = {xVect,yVect};
-                        echangerCarte(joueurCourant,numero);
+                        int[] tabVecteur = {xVect,yVect};  //Si ce vecteur appartient bien au tableau, on stocke ses coordonnées dans un tableau et on le renvoie
+                        echangerCarte(joueurCourant,numero);  //On échange la carte utilisée par le joueur avec la carte de l'echiquier, car on est sûr à ce stade que le déplacement aura lieu avec cette carte
                         return tabVecteur;
             }
-            }
+            }   System.out.println("Saisissez des coordonnées valides de déplacement par rapport à la carte choisie");
+                choisirDeplacement(coordonneesPiece,numero);   
             }
             else{
                 System.out.println("Vous ne pouvez pas manger vos propre pion");
@@ -183,20 +186,20 @@ public class Partie {
                         echangerCarte(joueurCourant,numero);
                         return tabVecteur;                       
             }               
-            }
             }System.out.println("Saisissez des coordonnées valides de déplacement par rapport à la carte choisie");
             choisirDeplacement(coordonneesPiece,numero);
+            }
             return null;
         }
     
     public void deplacerPion(int[] tabVecteur, int[] coordonneesPiece){
-        int xArrivee = coordonneesPiece[0] + tabVecteur[0];
+        int xArrivee = coordonneesPiece[0] + tabVecteur[0];  //Calcul des coordonnées de la case d'arrivée du pion 
         int yArrivee = coordonneesPiece[1] + tabVecteur[1];
         
         Piece pieceADeplacer = grilleJeu.Cellules[coordonneesPiece[0]][coordonneesPiece[1]].pieceCourante;
         
-        grilleJeu.Cellules[xArrivee][yArrivee].pieceCourante = pieceADeplacer;
-        grilleJeu.Cellules[coordonneesPiece[0]][coordonneesPiece[1]].pieceCourante = null;
+        grilleJeu.Cellules[xArrivee][yArrivee].pieceCourante = pieceADeplacer;  //On réalise le déplacement
+        grilleJeu.Cellules[coordonneesPiece[0]][coordonneesPiece[1]].pieceCourante = null; 
         
     }
     
@@ -262,6 +265,7 @@ public class Partie {
     public void tourDeJeu(){
         while (grilleJeu.etreGagnantePourJoueur(listeJoueurs[0]) != true && grilleJeu.etreGagnantePourJoueur(listeJoueurs[1]) != true){
             
+            System.out.println(joueurCourant.nom);
             afficherCartesJoueur(joueurCourant);
             
             int choixCarte = choisirCarte();
@@ -285,6 +289,9 @@ public class Partie {
         }
     }
 }
+
+
+
 
 
 
