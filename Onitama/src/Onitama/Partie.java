@@ -71,7 +71,7 @@ public class Partie {
     }
     
     public void placerPieces(){
-        if (listeJoueurs[0].couleur.equals("bleu")){
+        if (listeJoueurs[0].couleur.equals("Bleu")){
             
             grilleJeu.Cellules[0][2].pieceCourante = listeJoueurs[0].listePieces[0];
             grilleJeu.Cellules[0][0].pieceCourante = listeJoueurs[0].listePieces[1];
