@@ -71,7 +71,7 @@ public class Partie {
     }
     
     public void placerPieces(){
-        if (listeJoueurs[0].couleur.equals("bleu")){
+        if (listeJoueurs[0].couleur.equals("Bleu")){
             
             grilleJeu.Cellules[0][2].pieceCourante = listeJoueurs[0].listePieces[0];
             grilleJeu.Cellules[0][0].pieceCourante = listeJoueurs[0].listePieces[1];
@@ -105,12 +105,12 @@ public class Partie {
         System.out.println("Saisir le numéro de la carte que vous souhaitez jouer");
         int numero=sc.nextInt();
         
-        if (numero != 1 && numero !=2){
+        if (numero != 1 && numero !=2){  //Recherche si le numéro est valide car on a que 2 cartes
             System.out.println("Choisissez un numéro de carte valide");
             choisirCarte();
         }
         else{
-            Carte carteAJouer=joueurCourant.listeCartes[numero-1];
+            Carte carteAJouer=joueurCourant.listeCartes[numero-1];  //On adapte le numéro entré avec la contrainte des tableaux qui commencent à 0
             return numero;
         }System.out.println("yo");
         return 0;        
@@ -119,32 +119,38 @@ public class Partie {
     public int[] choisirPion(){
         Scanner sc = new Scanner(System.in);
         System.out.println("Saisir le numéro de la ligne de la pièce que vous souhaitez déplacer");
-        int x=sc.nextInt()-1;
+        int x=sc.nextInt()-1;  // On fait -1 pour adapter la saisie aux coordonnées en tableau
         System.out.println("Saisir le numéro de la colonne de la pièce que vous souhaitez déplacer");
         int y=sc.nextInt()-1;
         int[] coordonneesPiece = new int[2];
         Piece pieceADeplacer;
+        
+         if (x > 4 || x < 0 || y > 4 || y < 0){
+            System.out.println("Saisissez des coordonnées correctes");
+            choisirPion();
+        }
+         
 
-        if (this.grilleJeu.Cellules[x][y].pieceCourante != null){
-            if (this.grilleJeu.Cellules[x][y].pieceCourante.couleur.equals(joueurCourant.couleur)){
+        if (this.grilleJeu.Cellules[x][y].pieceCourante != null){ //On vérifie si les coordonnées de pion saisis correspondent bien à une case contenant une pièce
+            if (this.grilleJeu.Cellules[x][y].pieceCourante.couleur.equals(joueurCourant.couleur)){ // On vérifie que la pièce à déplacer est bien de la couleur du joueur qui joue
                 pieceADeplacer = this.grilleJeu.Cellules[x][y].pieceCourante;
-                coordonneesPiece[0] = x;
+                coordonneesPiece[0] = x;  //On stocke les coordonnées de la pièce à déplacer
                 coordonneesPiece[1] = y;
-                return coordonneesPiece;
+                return coordonneesPiece;  // On retourne les coordonnées de la pièce
             }
-            else{
-                System.out.println("Saisissez des coordonnées de pièces correspondant à une de vos pièces");
+            else{  //Si le joueur sélectionne une pièce adverse on relance la fonction
+                System.out.println("Saisissez des coordonnées de pièces correspondant à une de vos pièces");  
                 choisirPion();
             }
         }
-        else{
+        else{  //Si il n'y a pas de pièce sur la cellule sélectionnée, on relance la fonction
             System.out.println("Saisissez des coordonnées de pièces correspondant à une de vos pièces");
             choisirPion();
         }return coordonneesPiece;
     }
     
     public int[] choisirDeplacement(int[] coordonneesPiece,int numero){
-        Carte carteAJouer = joueurCourant.listeCartes[numero-1];
+        Carte carteAJouer = joueurCourant.listeCartes[numero-1]; //On accède à la carte jouée par le joueur
         
         Scanner sc = new Scanner(System.in);  //Saisie du point d'arrivée de la pièce
         System.out.println("Saisir le numéro de la ligne où vous souhaitez déplacer votre pièce");
@@ -152,23 +158,23 @@ public class Partie {
         System.out.println("Saisir le numéro de la colonne où vous souhaitez déplacer votre pièce");
         int y=sc.nextInt()-1;
         
-        if (x > 4 || x < 0 || y > 4 || y < 0){
+        if (x > 4 || x < 0 || y > 4 || y < 0){  //On vérifie que les coordonnées saisies sont correctes
             System.out.println("Saisissez des coordonnées correctes");
             choisirDeplacement(coordonneesPiece,numero);
         }
                 
-        if(grilleJeu.Cellules[x][y].pieceCourante != null){
-            if(!grilleJeu.Cellules[x][y].pieceCourante.couleur.equals(joueurCourant.couleur)){
+        if(grilleJeu.Cellules[x][y].pieceCourante != null){  //On vérifie si la pièce d'arrivée souhaitée contient ou non déjà une pièce
+            if(!grilleJeu.Cellules[x][y].pieceCourante.couleur.equals(joueurCourant.couleur)){ //Si on mange un pion, on vérifie que ce ne soit pas un pion du joueur qui joue
                 int xVect = x - coordonneesPiece[0];  //On définit le vecteur entre la case initiale du pion et la case d'arrivée souhaitée par ses 2 coordonnées
                 int yVect = y - coordonneesPiece[1];
                 
-                for (int i=0; i < carteAJouer.tabDeplacement.length; i++){  //On vérifie que ce vecteur appartienne au tableau des vecteurs déplacement possibles associés à la carte
+                for (int i=0; i < carteAJouer.tabDeplacement.length; i++){  //On vérifie que ce vecteur appartienne au tableau des vecteurs déplacement possibles associés à la carte, en vérifiant un des couples de coordonnées de vecteur corresponde bien au couple de coordonnées du vecteur entre la case initiale du pion et sa case finale souhaitée
                     if (xVect == carteAJouer.tabDeplacement[i][0] && yVect == carteAJouer.tabDeplacement[i][1]){
                         int[] tabVecteur = {xVect,yVect};  //Si ce vecteur appartient bien au tableau, on stocke ses coordonnées dans un tableau et on le renvoie
-                        echangerCarte(joueurCourant,numero);  //On échange la carte utilisée par le joueur avec la carte de l'echiquier, car on est sûr à ce stade que le déplacement aura lieu avec cette carte
+                        echangerCarte(joueurCourant,numero);  //On échange la carte utilisée par le joueur avec la carte de l'echiquier, car on est sûrs, à ce stade, que le déplacement aura lieu avec cette carte
                         return tabVecteur;
             }
-            }   System.out.println("Saisissez des coordonnées valides de déplacement par rapport à la carte choisie");
+            }   System.out.println("Saisissez des coordonnées valides de déplacement par rapport à la carte choisie");  //Si on a pas trouvé de correspondance, le déplacement souhaité n'est pas permis par la cartes, on relance donc la fonction 
                 choisirDeplacement(coordonneesPiece,numero);   
             }
             else{
@@ -176,12 +182,12 @@ public class Partie {
                 choisirDeplacement(coordonneesPiece,numero);
             }
     }
-        else{
+        else{ //Si la case d'arrivée souhaitée ne contient pas déjà un pion
             int xVect = x - coordonneesPiece[0];
             int yVect = y - coordonneesPiece[1];
             
             for (int i=0; i < carteAJouer.tabDeplacement.length; i++){
-                    if (xVect == carteAJouer.tabDeplacement[i][0] && yVect == carteAJouer.tabDeplacement[i][1]){
+                    if (xVect == carteAJouer.tabDeplacement[i][0] && yVect == carteAJouer.tabDeplacement[i][1]){ 
                         int[] tabVecteur = {xVect,yVect};
                         echangerCarte(joueurCourant,numero);
                         return tabVecteur;                       
@@ -247,7 +253,7 @@ public class Partie {
         placerPieces();
         placerPieces();
         
-        this.piochePartie.melangerPioche(this.piochePartie.cartePioche);
+        this.piochePartie.melangerPioche(this.piochePartie.cartePioche); //On mélange la pioche et on attribue les cartes au joueur et les cartes de la grille
         piocherCarteEchiquier();
         piocherCarte(J1);
         piocherCarte(J2);
@@ -289,9 +295,3 @@ public class Partie {
         }
     }
 }
-
-
-
-
-
-
